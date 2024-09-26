@@ -56,7 +56,7 @@
 	</ghost>
 	<components >
 		<settings autoimg='0' center='1' unitscale='0' fixedscale='0' fixedx='25' fixedy='25' fixedz='25' headcode='0' />
-		<definition guid='ea5f63b9-bbc1-4ed9-8aef-88319aa9fce0' vstate='40' vmin='0' vmaj='1' srcleaf='' visiblename='' description='' category='' category2='' category3='' bIs2dOnly='0' bIs3dOnly='0' catenable='1' author='' manuname='' manucode='' sysinfo='0' keywords='' dynamic='1' scadaCompatible='0' embeddedCompatible='1' showmacros='1' iconpath='' />
+		<definition guid='1fb1ba4b-f260-4c06-8428-201b2b8bffe2' vstate='40' vmin='0' vmaj='1' srcleaf='' visiblename='' description='' category='' category2='' category3='' bIs2dOnly='0' bIs3dOnly='0' catenable='1' author='' manuname='' manucode='' sysinfo='0' keywords='' dynamic='1' scadaCompatible='0' embeddedCompatible='1' showmacros='1' iconpath='' />
 		<component class_type='root' codename='ComponentRoot' panelId='-1' x='0' y='0' z='0' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' scadavisible='1' interactive='1' solid='1' layer='0' poslock='0' comp2dType='0' >
 			<resources />
 			<properties />
@@ -65,7 +65,13 @@
 			<apis />
 			<variables >
 				<variable public='0' >
+					<def class_type='variable' name='Potenciometro' type='u16' description='' isconst='0' isHidden='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
 					<def class_type='variable' name='false' type='b1' description='' isconst='1' isHidden='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='angulo' type='s16' description='' isconst='0' isHidden='0' isinit='1' usrinit='0' setinit='0' />
 				</variable>
 				<variable public='0' >
 					<def class_type='variable' name='Boton' type='b1' description='' isconst='0' isHidden='0' isinit='1' usrinit='0' setinit='0' />
@@ -81,38 +87,88 @@
 						<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='Actuators_BL0127' macro='Servo_EnableServo' >
 							<argument exp='0' />
 						</command>
-						<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='Actuators_BL0127' macro='Servo_Initialise' />
-						<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='Actuators_BL0127' macro='Servo_SetAutoMoveSpeed' >
-							<argument exp='4' />
-						</command>
 						<command class_type='loop' title='Bucle' cmdcolor='4767473' cmdcolor_sec='11337727' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' type='0' exp='1' >
 							<flowline >
+								<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='ComboBL0114' macro='IO_ReadAnalogAsInt' >
+									<return exp='Potenciometro' />
+									<argument exp='1' />
+								</command>
 								<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='ComboBL0114' macro='IO_GetSwitchState' >
 									<return exp='Boton' />
-									<argument exp='0' />
+									<argument exp='1' />
 									<argument exp='0' />
 								</command>
-								<command class_type='decision' title='Decisión' cmdcolor='4767473' cmdcolor_sec='11337727' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' exp='Boton == 0' swap='0' >
-									<flowline >
-										<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='Actuators_BL0127' macro='Servo_SetPosition' >
-											<argument exp='0' />
-											<argument exp='0' />
-										</command>
-									</flowline>
-									<flowline >
-										<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='Actuators_BL0127' macro='Servo_SetPosition' >
-											<argument exp='0' />
-											<argument exp='90' />
-										</command>
-									</flowline>
+								<command class_type='calculation' title='Cálculo' cmdcolor='4206456' cmdcolor_sec='10785756' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' >
+									<exp exp='angulo = (int2float(Potenciometro) / 255) * 180' />
+								</command>
+								<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='ComboBL0114' macro='LCD_PrintNumber' >
+									<argument exp='Potenciometro' />
+								</command>
+								<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='ComboBL0114' macro='LCD_Cursor' >
+									<argument exp='0' />
+									<argument exp='1' />
+								</command>
+								<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='ComboBL0114' macro='LCD_PrintNumber' >
+									<argument exp='angulo' />
 								</command>
 								<command class_type='delay' title='Retardo' cmdcolor='4206456' cmdcolor_sec='10785756' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' exp='500' type='1' />
+								<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='ComboBL0114' macro='LCD_Clear' />
+								<command class_type='calculation' title='Cálculo' cmdcolor='4206456' cmdcolor_sec='10785756' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' >
+									<exp exp='float2int(angulo)' />
+								</command>
+								<command class_type='decision' title='Decisión' cmdcolor='4767473' cmdcolor_sec='11337727' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' exp='Boton == 1' swap='0' >
+									<flowline >
+										<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='Actuators_BL0127' macro='Servo_SetPosition' >
+											<argument exp='0' />
+											<argument exp='0' />
+										</command>
+										<command class_type='delay' title='Retardo' cmdcolor='4206456' cmdcolor_sec='10785756' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' exp='500' type='1' />
+									</flowline>
+									<flowline />
+								</command>
+								<command class_type='call' title='Llamar a Macro de Componente' cmdcolor='4487093' cmdcolor_sec='11066367' cmdcolor_txt='16777215' cmdgradient='4' cmdopacity='0.64' component='Actuators_BL0127' macro='Servo_SetPosition' >
+									<argument exp='0' />
+									<argument exp='angulo' />
+								</command>
 							</flowline>
 						</command>
 					</flowline>
 				</macro>
 			</macros>
-			<component class_type='ref' guid='cb3aa82e-81d7-491d-bab1-3fb7ee39c6af' vmin='0' vmaj='1' codename='Actuators_BL0127' panelId='0' x='310' y='-215.5' z='1' xsz='29.6941' ysz='24.924' zsz='25' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' scadavisible='1' interactive='1' solid='1' layer='2' poslock='0' comp2dType='0' >
+			<component class_type='ref' guid='d4c04ac8-bbcd-4981-8ce6-9d6c9bb1e26a' vmin='0' vmaj='1' codename='ComboBL0114' panelId='0' x='225' y='-193.5' z='0' xsz='13.6142' ysz='13.4904' zsz='25' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' scadavisible='1' interactive='1' solid='1' layer='2' poslock='1' comp2dType='0' >
+				<resources />
+				<properties />
+				<values >
+					<value target='ConnType' data='0' />
+					<value target='Bank0' data='$PORTA' />
+					<value target='PinA0' data='$PORTA.0' />
+					<value target='PinA1' data='$PORTA.1' />
+					<value target='PinA2' data='$PORTA.2' />
+					<value target='PinA3' data='$PORTA.3' />
+					<value target='PinA4' data='$PORTA.4' />
+					<value target='PinA5' data='$PORTA.5' />
+					<value target='PinA6' data='$PORTA.6' />
+					<value target='PinA7' data='$PORTA.7' />
+					<value target='Bank1' data='$PORTB' />
+					<value target='PinB0' data='$PORTB.0' />
+					<value target='PinB1' data='$PORTB.1' />
+					<value target='PinB2' data='$PORTB.2' />
+					<value target='PinB3' data='$PORTB.3' />
+					<value target='PinB4' data='$PORTB.4' />
+					<value target='PinB5' data='$PORTB.5' />
+					<value target='PinB6' data='$PORTB.6' />
+					<value target='PinB7' data='$PORTB.7' />
+					<value target='Init' data='1' />
+					<value target='LightSensorADC' data='0' />
+					<value target='PotADC' data='1' />
+					<value target='AnaScopeTraces' data='0' />
+				</values>
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+			<component class_type='ref' guid='cb3aa82e-81d7-491d-bab1-3fb7ee39c6af' vmin='0' vmaj='1' codename='Actuators_BL0127' panelId='0' x='715' y='-210' z='1' xsz='31.7187' ysz='27.5912' zsz='25' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' scadavisible='1' interactive='1' solid='1' layer='2' poslock='0' comp2dType='0' >
 				<resources />
 				<properties />
 				<values >
@@ -151,54 +207,21 @@
 				<variables />
 				<macros />
 			</component>
-			<component class_type='ref' guid='d4c04ac8-bbcd-4981-8ce6-9d6c9bb1e26a' vmin='0' vmaj='1' codename='ComboBL0114' panelId='0' x='269.5' y='-104.5' z='0' xsz='12.6327' ysz='12.581' zsz='25' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' scadavisible='1' interactive='1' solid='1' layer='2' poslock='1' comp2dType='0' >
-				<resources />
-				<properties />
-				<values >
-					<value target='ConnType' data='0' />
-					<value target='Bank0' data='$PORTA' />
-					<value target='PinA0' data='$PORTA.0' />
-					<value target='PinA1' data='$PORTA.1' />
-					<value target='PinA2' data='$PORTA.2' />
-					<value target='PinA3' data='$PORTA.3' />
-					<value target='PinA4' data='$PORTA.4' />
-					<value target='PinA5' data='$PORTA.5' />
-					<value target='PinA6' data='$PORTA.6' />
-					<value target='PinA7' data='$PORTA.7' />
-					<value target='Bank1' data='$PORTB' />
-					<value target='PinB0' data='$PORTB.0' />
-					<value target='PinB1' data='$PORTB.1' />
-					<value target='PinB2' data='$PORTB.2' />
-					<value target='PinB3' data='$PORTB.3' />
-					<value target='PinB4' data='$PORTB.4' />
-					<value target='PinB5' data='$PORTB.5' />
-					<value target='PinB6' data='$PORTB.6' />
-					<value target='PinB7' data='$PORTB.7' />
-					<value target='Init' data='1' />
-					<value target='LightSensorADC' data='0' />
-					<value target='PotADC' data='1' />
-					<value target='AnaScopeTraces' data='0' />
-				</values>
-				<events />
-				<apis />
-				<variables />
-				<macros />
-			</component>
 		</component>
 	</components>
 	<scadaresourcelookup />
 	<keymap />
 	<panel2d shadows='0' lighting='2' brightness='0' >
 		<background rgb='7292207' img='' style='0' />
-		<camera xe='0' ye='0' ze='2325.33' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
-		<viewport dx='549' dy='384' zoom='28.5676' fix_topleft='0' />
+		<camera xe='0' ye='0' ze='404.14' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+		<viewport dx='128' dy='128' zoom='38.3234' fix_topleft='0' />
 		<page x='1000' y='1000' show='0' rgb='7360576' />
-		<winpos ID='7005' RectRecentFloat='682,350,1332,800' RectRecentDocked='0,0,485,413' RecentFrameAlignment='16384' RecentRowIndex='0' IsFloating='0' MRUWidth='32767' PinState='0' IsMaximized='0' IsVisible='0' />
+		<winpos ID='7005' RectRecentFloat='1270,630,1920,1080' RectRecentDocked='465,141,819,503' RecentFrameAlignment='16384' RecentRowIndex='0' IsFloating='0' MRUWidth='32767' PinState='0' IsMaximized='0' IsVisible='0' />
 	</panel2d>
 	<panel3d shadows='0' lighting='2' brightness='0' perspective='1' >
 		<background rgb='8409120' img='' style='0' />
 		<table rgb='7360576' img='' style='0' size='0' />
-		<camera xe='15.5787' ye='-4.09845' ze='122.984' xt='15.5787' yt='-4.09845' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+		<camera xe='0' ye='0' ze='781.66' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
 		<camerakey0 xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
 		<camerakey1 xe='-3.67394e-14' ye='0' ze='-300' xt='0' yt='0' zt='0' xquat='0' yquat='1' zquat='0' wquat='6.12323e-17' />
 		<camerakey2 xe='0' ye='-300' ze='6.66134e-14' xt='0' yt='0' zt='0' xquat='-0.707107' yquat='0' zquat='0' wquat='0.707107' />
@@ -206,16 +229,16 @@
 		<camerakey4 xe='-300' ye='-6.66134e-14' ze='6.66134e-14' xt='0' yt='0' zt='0' xquat='-0.5' yquat='0.5' zquat='0.5' wquat='0.5' />
 		<camerakey5 xe='300' ye='-6.66134e-14' ze='6.66134e-14' xt='0' yt='0' zt='0' xquat='-0.5' yquat='-0.5' zquat='-0.5' wquat='0.5' />
 		<camerakey6 xe='-173.205' ye='-173.205' ze='173.205' xt='0' yt='0' zt='0' xquat='-0.424708' yquat='0.17592' zquat='0.339851' wquat='0.820473' />
-		<winpos ID='7004' RectRecentFloat='556,304,1206,754' RectRecentDocked='315,183,789,735' RecentFrameAlignment='16384' RecentRowIndex='0' IsFloating='0' MRUWidth='32767' PinState='0' IsMaximized='0' IsVisible='0' />
+		<winpos ID='7004' RectRecentFloat='0,425,654,1002' RectRecentDocked='675,141,819,503' RecentFrameAlignment='16384' RecentRowIndex='0' IsFloating='0' MRUWidth='32767' PinState='0' IsMaximized='0' IsVisible='0' />
 	</panel3d>
 	<panels2d count='1' >
 		<panel2d_0 id='0' name='2D Panel' >
-			<winpos ID='1171' RectRecentFloat='958,428,1608,878' RectRecentDocked='1435,183,1920,1005' RecentFrameAlignment='16384' RecentRowIndex='0' IsFloating='0' MRUWidth='32767' PinState='0' IsMaximized='0' IsVisible='1' />
+			<winpos ID='1171' RectRecentFloat='134,158,1181,712' RectRecentDocked='0,141,1280,322' RecentFrameAlignment='8192' RecentRowIndex='0' IsFloating='1' MRUWidth='32767' PinState='0' IsMaximized='0' IsVisible='1' />
 			<background fill='288230376151053813' showgrid='1' gridstyle='1' gridsize='10' gridbrush='71776119075691740' snaptogrid='1' />
 		</panel2d_0>
 	</panels2d>
 	<layout >
-		<view type='0' name='Main' mode='0' placement='LAAAAAAAAAABAAAA---------------------wUAAAAeAAAAWwQAADEDAAA' zoom='100' scrollx='0' scrolly='13' flags='0' />
+		<view type='0' name='Main' mode='0' placement='LAAAAAAAAAABAAAA---------------------wUAAAAYAAAAxgMAAGUBAAA' zoom='100' scrollx='0' scrolly='0' flags='0' />
 	</layout>
 </document>
 </root>
